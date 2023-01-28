@@ -43,9 +43,6 @@ class BarberShop:
 				print('Barber woke up')
 				
                 
-
-                
-	
 	def enterBarberShop(self, customer):
 		mutex.acquire()
 		print ('>> {0} entered the shop and is looking for a seat'.format(customer.name))
@@ -114,5 +111,3 @@ if __name__ == '__main__':
 		barberShop.enterBarberShop(c)
 		customerInterval = random.randrange(customerIntervalMin,customerIntervalMax+1)
 		time.sleep(customerInterval)
-
-		

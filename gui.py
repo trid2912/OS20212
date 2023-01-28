@@ -9,10 +9,11 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import time
 
 
 class Ui_Dialog(object):
-    def setupUi(self, Dialog):
+    def setupUi(self, Dialog, cus = None):
         Dialog.setObjectName("Dialog")
         Dialog.resize(859, 535)
         self.horizontalLayoutWidget = QtWidgets.QWidget(Dialog)
@@ -156,3 +157,4 @@ if __name__ == "__main__":
     ui.setupUi(Dialog)
     Dialog.show()
     sys.exit(app.exec_())
+    
