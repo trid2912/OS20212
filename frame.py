@@ -2,7 +2,8 @@ import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog, QApplication
-
+from explanation import Ui_ExplanationWindow
+from solution import Ui_Solution
 class MainWindow(QDialog):
     def __init__(self, state = {"barber": "sleeping", "customers": 0, "mutex": "unlock", "waiting": 0, "chairs": 4,
                                 "barber's chair": None, "waiting room": [None, None, None, None], "lock_mutex": None,
@@ -26,19 +27,22 @@ class MainWindow(QDialog):
         self.chair.setText(str(state["chairs"]))
 
         self.btnExplain.clicked.connect(self.clickExplain)
-        self.btnSolution.clicked.connect(self.changeScreen)
+        self.btnSolution.clicked.connect(self.clickSolution)
         self.btnVisual.clicked.connect(self.clickVisualization)
         self.prev.clicked.connect(self.clickPrevious)
         self.next.clicked.connect(self.clickNext)
         self.addCustom.clicked.connect(self.clickAddCustomer)
-    def changeScreen(self):
-        nextwindow = MainWindow(self.state)
-        widget.addWidget(nextwindow)
-        widget.setCurrentIndex(widget.currentIndex()+1)
     def clickExplain(self):
-        pass
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_ExplanationWindow()
+        self.ui.setupUi(self.window)
+        self.window.show()
+        
     def clickSolution(self):
-        pass
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_Solution()
+        self.ui.setupUi(self.window)
+        self.window.show()
     def clickVisualization(self):
         pass
     def clickPrevious(self):
