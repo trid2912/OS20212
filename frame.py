@@ -26,7 +26,7 @@ class MainWindow(QDialog):
         self.chair.setText(str(state["chairs"]))
 
         self.btnExplain.clicked.connect(self.clickExplain)
-        self.btnSolution.clicked.connect(self.changeScreen)
+        self.btnSolution.clicked.connect(self.clickSolution)
         self.btnVisual.clicked.connect(self.clickVisualization)
         self.prev.clicked.connect(self.clickPrevious)
         self.next.clicked.connect(self.clickNext)
@@ -42,32 +42,56 @@ class MainWindow(QDialog):
     def clickVisualization(self):
         pass
     def clickPrevious(self):
-        pass
+        widget.removeWidget(widget.currentWidget())
+        widget.setCurrentIndex(widget.currentIndex()-1)
+
     def clickNext(self):
         if self.state["mutex"] == "lock":
             if self.state["lock_mutex"] == "barber":
-                self.state["state"] = "Barber sees a customer, locks the mutex and calls the customer."
+                self.state["state"] = "Barber walks "+ self.state["waiting room"][0] +" to the barber's chair and releases the mutex."
+                self.state["barber's chair"] = self.state["waiting room"][0]
+                self.state["waiting room"].pop(0)
+                self.state["waiting room"].append(None)
+                self.state["customers"] -= 1
+                self.state["waiting"] -= 1
+                self.state["chairs"] += 1
+                
+            elif self.state["lock_mutex"] not in self.state["waiting room"]:
+                self.state["state"] = self.state["lock_mutex"] + " sees the full waiting room, releases the mutex and leaves."
             else:
                 self.state["state"] = self.state["lock_mutex"] + " sits down and releases the mutex."
             self.state["mutex"] = "unlock"
             self.state["lock_mutex"] = None
+        else:
+            if self.state["barber"] == "sleeping":
+                self.state["barber"] = "Awake"
+            if self.state["barber's chair"] == None and self.state["waiting"] > 0:
+                self.state["state"] = "Barber sees a customer, locks the mutex and calls the customer."
+                self.state["mutex"] = "lock"
+                self.state["lock_mutex"] = "barber"
+            elif self.state["barber's chair"] != None:
+                self.state["state"] = "Barber finishes cutting "+ self.state["barber's chair"] + " 's hair."
+                self.state["barber's chair"] = None
+                self.state["mutex"] = "unlock"
+            elif self.state["barber's chair"] == None and self.state["waiting"] == 0:
+                self.state["barber"] = "sleeping"
+                self.state["state"] = "Barber sees no customers and instantly falls asleep."
         self.changeScreen()
     def clickAddCustomer(self):
         if self.state["mutex"] == "unlock":
-            if self.state["chairs"] > 0:
-                for i in range(0,4):
-                    if self.state["waiting room"][i] == None:
-                        self.state["waiting room"][i] = "Customer #"+ str(self.state["addCustom"])
-                        break
-                self.state["state"] = "Customer #"+ str(self.state["addCustom"]) + " arrives and locks the mutex to see if they will wait."
+            
+            for i in range(0,4):
+                if self.state["waiting room"][i] == None:
+                    self.state["waiting room"][i] = "Customer #"+ str(self.state["addCustom"])
+                    break
+            self.state["state"] = "Customer #"+ str(self.state["addCustom"]) + " arrives and locks the mutex to see if they will wait."
+            self.state["mutex"] = "lock"
+            self.state["lock_mutex"] = "Customer #"+ str(self.state["addCustom"])
+            if self.state["chairs"] > 0:    
                 self.state["customers"] += 1
-                self.state["mutex"] = "lock"
-                self.state["lock_mutex"] = "Customer #"+ str(self.state["addCustom"])
                 self.state["waiting"] += 1
                 self.state["chairs"] -= 1
                 self.state["addCustom"] += 1
-            else:
-                self.state["state"] = "Customer #"+ str(self.state["addCustom"]) + " sees the full waiting room, releases the mutex and leaves."
         else:
             self.state["state"] = "Mutex is lock so customer #" + str(self.state["addCustom"]) + " cannot go to waiting room."
         self.changeScreen()
