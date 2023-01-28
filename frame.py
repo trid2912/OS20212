@@ -32,6 +32,10 @@ class MainWindow(QDialog):
         self.prev.clicked.connect(self.clickPrevious)
         self.next.clicked.connect(self.clickNext)
         self.addCustom.clicked.connect(self.clickAddCustomer)
+    def changeScreen(self):
+        nextwindow = MainWindow(self.state)
+        widget.addWidget(nextwindow)
+        widget.setCurrentIndex(widget.currentIndex()+1)
     def clickExplain(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_ExplanationWindow()
