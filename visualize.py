@@ -30,15 +30,18 @@ class MainWindow(QMainWindow):
             self.mutex.setText(state["mutex"])
             self.waiting.setText(str(state["waiting"]))
             self.chair.setText(str(state["chairs"]))
-            
+
+            self.btnVisual.setStyleSheet('QWidget {background-color: %s}' % "white")
 
             self.next.clicked.connect(self.clickNext)
             self.addCustom.clicked.connect(self.clickAddCustomer)
             self.addChair.clicked.connect(self.clickAddChair)
         elif self.state["window"] == "solution":
             loadUi("solution.ui",self)
+            self.btnSolution.setStyleSheet('QWidget {background-color: %s}' % "white")
         elif self.state["window"] == "explanation":
             loadUi("explanation.ui",self)
+            self.btnExplain.setStyleSheet('QWidget {background-color: %s}' % "white")
         self.btnExplain.clicked.connect(self.clickExplain)
         self.btnSolution.clicked.connect(self.clickSolution)
         self.btnVisual.clicked.connect(self.clickVisualization)
