@@ -7,50 +7,67 @@ from solution import Ui_Solution
 class MainWindow(QMainWindow):
     def __init__(self, state = {"barber": "sleeping", "customers": 0, "mutex": "unlock", "waiting": 0, "chairs": 4,
                                 "barber's chair": None, "waiting room": [], "lock_mutex": None,
-                                "state": "Barbershop open for business...", "addCustom": 1}) :
+                                "state": "Barbershop open for business...", "addCustom": 1, "window": "visualize"}) :
         super(MainWindow,self).__init__()
-        loadUi("visualize.ui", self)
         self.state = state
-        '''
-        self.customer1.setText(state["waiting room"][0])
-        self.customer2.setText(state["waiting room"][1])
-        self.customer3.setText(state["waiting room"][2])
-        self.customer4.setText(state["waiting room"][3])
-        '''
-        for i in range(state["waiting"]):
-            self.WaitingList.addItem(state["waiting room"][i])
-        self.barberChair.setText(state["barber's chair"])
-        self.lblstate.setText(state["state"])
+        
+        if self.state["window"] == "visualize":
+            loadUi("visualize.ui", self)
+            
+            '''
+            self.customer1.setText(state["waiting room"][0])
+            self.customer2.setText(state["waiting room"][1])
+            self.customer3.setText(state["waiting room"][2])
+            self.customer4.setText(state["waiting room"][3])
+            '''
+            for i in range(state["waiting"]):
+                self.WaitingList.addItem(state["waiting room"][i])
+            self.barberChair.setText(state["barber's chair"])
+            self.lblstate.setText(state["state"])
 
-        self.barberState.setText(state["barber"])
-        self.numberCustomer.setText(str(state["customers"]))
-        self.mutex.setText(state["mutex"])
-        self.waiting.setText(str(state["waiting"]))
-        self.chair.setText(str(state["chairs"]))
+            self.barberState.setText(state["barber"])
+            self.numberCustomer.setText(str(state["customers"]))
+            self.mutex.setText(state["mutex"])
+            self.waiting.setText(str(state["waiting"]))
+            self.chair.setText(str(state["chairs"]))
+            
 
+            self.next.clicked.connect(self.clickNext)
+            self.addCustom.clicked.connect(self.clickAddCustomer)
+            self.addChair.clicked.connect(self.clickAddChair)
+        elif self.state["window"] == "solution":
+            loadUi("solution.ui",self)
+        elif self.state["window"] == "explanation":
+            loadUi("explanation.ui",self)
         self.btnExplain.clicked.connect(self.clickExplain)
         self.btnSolution.clicked.connect(self.clickSolution)
         self.btnVisual.clicked.connect(self.clickVisualization)
-        self.next.clicked.connect(self.clickNext)
-        self.addCustom.clicked.connect(self.clickAddCustomer)
-        self.addChair.clicked.connect(self.clickAddChair)
     def changeScreen(self):
         nextwindow = MainWindow(self.state)
         widget.addWidget(nextwindow)
         widget.setCurrentIndex(widget.currentIndex()+1)
     def clickExplain(self):
+        '''
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_ExplanationWindow()
         self.ui.setupUi(self.window)
         self.window.show()
+        '''
+        self.state["window"] = "explanation"
+        self.changeScreen()
         
     def clickSolution(self):
+        '''
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_Solution()
         self.ui.setupUi(self.window)
         self.window.show()
+        '''
+        self.state["window"] = "solution"
+        self.changeScreen()
     def clickVisualization(self):
-        pass
+        self.state["window"] = "visualize"
+        self.changeScreen()
 
     def clickNext(self):
         if self.state["mutex"] == "lock":
