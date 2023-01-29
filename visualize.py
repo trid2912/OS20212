@@ -1,22 +1,24 @@
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QApplication
+from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow
 from explanation import Ui_ExplanationWindow
 from solution import Ui_Solution
-class MainWindow(QDialog):
+class MainWindow(QMainWindow):
     def __init__(self, state = {"barber": "sleeping", "customers": 0, "mutex": "unlock", "waiting": 0, "chairs": 4,
-                                "barber's chair": None, "waiting room": [None, None, None, None], "lock_mutex": None,
+                                "barber's chair": None, "waiting room": [], "lock_mutex": None,
                                 "state": "Barbershop open for business...", "addCustom": 1}) :
         super(MainWindow,self).__init__()
-        loadUi("gui.ui", self)
+        loadUi("visualize.ui", self)
         self.state = state
-
+        '''
         self.customer1.setText(state["waiting room"][0])
         self.customer2.setText(state["waiting room"][1])
         self.customer3.setText(state["waiting room"][2])
         self.customer4.setText(state["waiting room"][3])
-
+        '''
+        for i in range(state["waiting"]):
+            self.WaitingList.addItem(state["waiting room"][i])
         self.barberChair.setText(state["barber's chair"])
         self.lblstate.setText(state["state"])
 
@@ -29,9 +31,9 @@ class MainWindow(QDialog):
         self.btnExplain.clicked.connect(self.clickExplain)
         self.btnSolution.clicked.connect(self.clickSolution)
         self.btnVisual.clicked.connect(self.clickVisualization)
-        self.prev.clicked.connect(self.clickPrevious)
         self.next.clicked.connect(self.clickNext)
         self.addCustom.clicked.connect(self.clickAddCustomer)
+        self.addChair.clicked.connect(self.clickAddChair)
     def changeScreen(self):
         nextwindow = MainWindow(self.state)
         widget.addWidget(nextwindow)
@@ -49,9 +51,6 @@ class MainWindow(QDialog):
         self.window.show()
     def clickVisualization(self):
         pass
-    def clickPrevious(self):
-        widget.removeWidget(widget.currentWidget())
-        widget.setCurrentIndex(widget.currentIndex()-1)
 
     def clickNext(self):
         if self.state["mutex"] == "lock":
@@ -59,15 +58,19 @@ class MainWindow(QDialog):
                 self.state["state"] = "Barber walks "+ self.state["waiting room"][0] +" to the barber's chair and releases the mutex."
                 self.state["barber's chair"] = self.state["waiting room"][0]
                 self.state["waiting room"].pop(0)
-                self.state["waiting room"].append(None)
-                self.state["customers"] -= 1
+                #self.state["customers"] -= 1
                 self.state["waiting"] -= 1
                 self.state["chairs"] += 1
-                
-            elif self.state["lock_mutex"] not in self.state["waiting room"]:
-                self.state["state"] = self.state["lock_mutex"] + " sees the full waiting room, releases the mutex and leaves."
             else:
-                self.state["state"] = self.state["lock_mutex"] + " sits down and releases the mutex."
+                if self.state["chairs"] > 0:    
+                    self.state["waiting room"].append( "Customer #"+ str(self.state["addCustom"]) )
+                    self.state["state"] = self.state["lock_mutex"] + " sits down and releases the mutex."
+                    self.state["customers"] += 1
+                    self.state["waiting"] += 1
+                    self.state["chairs"] -= 1
+                    self.state["addCustom"] += 1
+                else:
+                    self.state["state"] = self.state["lock_mutex"] + " sees the full waiting room, releases the mutex and leaves."
             self.state["mutex"] = "unlock"
             self.state["lock_mutex"] = None
         else:
@@ -79,6 +82,7 @@ class MainWindow(QDialog):
                 self.state["lock_mutex"] = "barber"
             elif self.state["barber's chair"] != None:
                 self.state["state"] = "Barber finishes cutting "+ self.state["barber's chair"] + " 's hair."
+                self.state["customers"] -= 1
                 self.state["barber's chair"] = None
                 self.state["mutex"] = "unlock"
             elif self.state["barber's chair"] == None and self.state["waiting"] == 0:
@@ -87,27 +91,20 @@ class MainWindow(QDialog):
         self.changeScreen()
     def clickAddCustomer(self):
         if self.state["mutex"] == "unlock":
-            
-            for i in range(0,4):
-                if self.state["waiting room"][i] == None:
-                    self.state["waiting room"][i] = "Customer #"+ str(self.state["addCustom"])
-                    break
             self.state["state"] = "Customer #"+ str(self.state["addCustom"]) + " arrives and locks the mutex to see if they will wait."
             self.state["mutex"] = "lock"
             self.state["lock_mutex"] = "Customer #"+ str(self.state["addCustom"])
-            if self.state["chairs"] > 0:    
-                self.state["customers"] += 1
-                self.state["waiting"] += 1
-                self.state["chairs"] -= 1
-                self.state["addCustom"] += 1
         else:
             self.state["state"] = "Mutex is lock so customer #" + str(self.state["addCustom"]) + " cannot go to waiting room."
+        self.changeScreen()
+    def clickAddChair(self):
+        self.state["chairs"] += 1
         self.changeScreen()
 app = QApplication(sys.argv)
 widget = QtWidgets.QStackedWidget()
 mainwindow = MainWindow()
 widget.addWidget(mainwindow)
-widget.setFixedHeight(550)
-widget.setFixedWidth(880)
+#widget.setFixedHeight(550)
+#widget.setFixedWidth(880)
 widget.show()
 sys.exit(app.exec_())

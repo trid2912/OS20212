@@ -248,19 +248,6 @@
     <string>Chairs</string>
    </property>
   </widget>
-  <widget class="QLabel" name="barberState">
-   <property name="geometry">
-    <rect>
-     <x>730</x>
-     <y>130</y>
-     <width>55</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="mutex">
    <property name="geometry">
     <rect>
@@ -323,19 +310,6 @@
     <string>Prev</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="next">
-   <property name="geometry">
-    <rect>
-     <x>420</x>
-     <y>300</y>
-     <width>93</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Next</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="addCustom">
    <property name="geometry">
     <rect>
@@ -357,19 +331,6 @@
      <width>561</width>
      <height>71</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="lblstate">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>460</y>
-     <width>551</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="label_5">
